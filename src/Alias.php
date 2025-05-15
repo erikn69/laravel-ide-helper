@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Traits\Macroable;
 use ReflectionClass;
 use Throwable;
+use Illuminate\Database\Eloquent\Model;
 
 class Alias
 {
@@ -105,7 +106,7 @@ class Alias
             $this->phpdoc = new DocBlock(new ReflectionClass($alias), new Context($this->namespace, $this->classAliases));
         }
 
-        if ($facade === '\Illuminate\Database\Eloquent\Model') {
+        if ($facade === '\\'.Model::class) {
             $this->usedMethods = ['decrement', 'increment'];
         }
     }
@@ -416,11 +417,16 @@ class Alias
                         // Only add the methods to the output when the root is not the same as the class.
                         // And don't add the __*() methods
                         if (($this->extends !== $class || $this->completeStub) && substr($method->name, 0, 2) !== '__') {
+                            $methodName = $method->name;
+                            if (starts_with($methodName, 'scope') && (is_subclass_of($class, Model::class) || $class == Model::class)) {
+                                $methodName = lcfirst(substr($methodName, 5));
+                            }
+
                             $this->methods[] = new Method(
                                 $method,
                                 $this->alias,
                                 $reflection,
-                                $method->name,
+                                $methodName,
                                 $this->interfaces,
                                 $this->classAliases,
                                 $this->getReturnTypeNormalizers($reflection),

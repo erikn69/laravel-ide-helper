@@ -114,6 +114,7 @@ class ModelsCommand extends Command
 
     protected $write_model_magic_where;
     protected $write_model_relation_count_properties;
+    protected $write_model_relation_exists_properties;
     protected $properties = [];
     protected $methods = [];
     protected $write = false;
@@ -816,6 +817,15 @@ class ModelsCommand extends Command
                                             true,
                                             false
                                             // What kind of comments should be added to the relation count here?
+                                        );
+                                    }
+                                    if ($this->write_model_relation_exists_properties) {
+                                        $this->setProperty(
+                                            Str::snake($method) . '_exists',
+                                            'bool|null',
+                                            true,
+                                            false
+                                            // What kind of comments should be added to the relation exists here?
                                         );
                                     }
                                 } elseif (
