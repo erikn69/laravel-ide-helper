@@ -269,9 +269,9 @@ class Generator
      */
     protected function getAliasesByExtendsNamespace()
     {
-        $aliases = $this->getValidAliases()->filter(static function (Alias $alias) {
+        $aliases = $this->getValidAliases()/*->filter(static function (Alias $alias) {
             return is_subclass_of($alias->getExtends(), Facade::class);
-        });
+        })*/;
 
         $this->addMacroableClasses($aliases);
 

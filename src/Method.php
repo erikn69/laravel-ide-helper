@@ -80,6 +80,9 @@ class Method
         //Get the parameters, including formatted default values
         $this->getParameters($method);
 
+        if (starts_with($method->name, 'scope') && $method->name != $methodName && !$method->hasReturnType() && !$this->phpdoc->hasTag('return')) {
+            $this->phpdoc->appendTag(Tag::createInstance("@return static"));
+        }
         //Make the method static
         $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
     }
